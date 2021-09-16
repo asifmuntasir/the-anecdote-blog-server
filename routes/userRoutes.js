@@ -1,8 +1,7 @@
 const app =  require("express");
 const router = app.Router();
-router.post("/register", (req, res) => {
-    res.send("Hello register")
-});
+const {register, registerValiation} = require('../controllers/userController');
+router.post("/register", registerValiation, register);
 
 module.exports = router;
 

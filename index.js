@@ -1,8 +1,12 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 const connect = require("./config/db")
 const router = require("./routes/userRoutes");
 
+
+// body-parse
+app.use(bodyParser.json());
 
 // connect mongodb database
 connect();

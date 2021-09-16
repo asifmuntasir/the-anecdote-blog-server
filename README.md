@@ -1,1 +1,1 @@
-It is a simple server side code of "The Anecdote" blog project.
+It the server side code of "The Anecdote" blog project.
