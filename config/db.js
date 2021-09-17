@@ -3,7 +3,11 @@ require('dotenv').config();
 
 module.exports = connect = async () => {
     try {
-        const uri = `mongodb+srv://${process.env.NAME}:${process.env.PASSWORD}@cluster0.qxj4r.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
+        const url = await mongoose.connect(process.env.URL, {
+            useUnifiedTopology: true,
+			useNewUrlParser: true,
+			useFindAndModify: false,
+        });
         console.log("Connection created!")
     } catch (error) {
         console.log(error);
