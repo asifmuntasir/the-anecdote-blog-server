@@ -1,12 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+const cors = require('cors')
 const connect = require("./config/db")
 const router = require("./routes/userRoutes");
 
 
 // body-parse
 app.use(bodyParser.json());
+
+// use cors
+app.use(cors());
 
 // connect mongodb database
 connect();

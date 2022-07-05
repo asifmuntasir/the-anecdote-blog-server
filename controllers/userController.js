@@ -19,6 +19,7 @@ module.exports.registerValiation = [
 ];
 
 
+///////////////// register user ///////////////////
 module.exports.register = async (req, res) => {
     // res.json(req.body);
     const { name, email, password } = req.body;
@@ -66,7 +67,9 @@ module.exports.register = async (req, res) => {
 }
 
 
-// login validation
+
+////////////////// login validation /////////////////
+
 module.exports.loginValiation = [
     body("email").not().isEmpty().trim().withMessage("Email is required"),
     body("password").not().isEmpty().withMessage("Password is required")
@@ -98,5 +101,4 @@ module.exports.login = async (req, res) => {
     } catch (error) {
         return res.status(500).json({errors : error});
     }
-
 }
