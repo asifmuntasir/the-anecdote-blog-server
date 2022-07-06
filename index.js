@@ -4,7 +4,7 @@ const app = express();
 const cors = require('cors')
 const connect = require("./config/db")
 const router = require("./routes/userRoutes");
-
+const postRoutes = require('./routes/postRoutes')
 
 // body-parse
 app.use(bodyParser.json());
@@ -25,6 +25,7 @@ const port = process.env.PORT || 5000;
 // })
 
 app.use("/", router);
+app.use("/", postRoutes)
 
 app.listen(port, () => {
     console.log(`App listening on port: ${port}`);
