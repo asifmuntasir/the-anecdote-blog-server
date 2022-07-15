@@ -91,3 +91,20 @@ module.exports.createPost = (req, res) => {
         }
     })
 }
+
+// Show created post
+
+module.exports.fetchPosts = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const response = await Post.find({ userId: id });
+        return res.status(200).json({
+            response
+        })
+    } catch (error) {
+        return res.status(500).json({
+            errors: error,
+            msg: error.message
+        });
+    }
+}
