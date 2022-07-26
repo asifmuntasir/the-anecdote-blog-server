@@ -154,12 +154,81 @@ module.exports.updateValidations = [
     body('description').notEmpty().trim().withMessage('Description is required!')
 ]
 
-module.exports.updatePost = (req, res) => {
-    const { title, body, description } = req.body;
+module.exports.updatePost = async (req, res) => {
+    const { title, body, description, id } = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({
             errors: errors.array()
         })
+    } else {
+        try {
+            const response = await Post.findByIdAndUpdate(id, {
+                title,
+                body,
+                description
+            });
+            return res.status(200).json({
+                msg: 'Your post has been updated.'
+            })
+        } catch (error) {
+            return res.status(500).json({
+                errors: error,
+                msg: error.message
+            })
+        }
     }
+}
+
+module.exports.updateImage = (req, res) => {
+    const form = formidable({
+        multiples: true
+    });
+    form.parse(req, (errors, fields, files) => {
+        const { id } = fields;
+        // console.log(files);
+        const imageErrors = [];
+        if (Object.keys(files).length === 0) {
+            imageErrors.push({
+                msg: 'Please select an image'
+            })
+        } else {
+            const { mimetype } = files.image;
+            const splitImage = mimetype.split('/');
+            // console.log(splitImage);
+            const extension = splitImage[1].toLowerCase();
+            if (extension !== 'jpg' && extension !== 'jpeg' && extension !== 'png') {
+                imageErrors.push({
+                    msg: `${extension} is not a valid extension`,
+                })
+            } else {
+                files.image.originalFilename = uuidv4() + '-' + extension;
+            }
+        }
+        if (imageErrors.length !== 0) {
+            return res.status(400).json({
+                errors: imageErrors
+            })
+        } else {
+            fs.copyFile(files.image.filepath, async (error) => {
+                if (!error) {
+                    try {
+                        const response = await Post.findByIdAndUpdate(id, {
+                            image: files.image.originalFilename,
+                        });
+                        return res.status(200).json({
+                            msg: 'Image has been updated successfully',
+                            response
+                        })
+                        console.log('Image Successfully Uploaded.');
+                    } catch (error) {
+                        return res.status(500).json({
+                            errors: error,
+                            msg: error.message
+                        })
+                    }
+                }
+            })
+        }
+    })
 }
