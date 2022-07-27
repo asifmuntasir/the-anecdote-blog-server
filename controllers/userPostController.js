@@ -202,7 +202,7 @@ module.exports.updateImage = (req, res) => {
                     msg: `${extension} is not a valid extension`,
                 })
             } else {
-                files.image.originalFilename = uuidv4() + '-' + extension;
+                files.image.originalFilename = uuidv4() + '.' + extension;
             }
         }
         if (imageErrors.length !== 0) {
@@ -210,6 +210,7 @@ module.exports.updateImage = (req, res) => {
                 errors: imageErrors
             })
         } else {
+            const newPath = __dirname + `../../the-anecdote-client/public/image/${files.image.originalFilename}`;
             fs.copyFile(files.image.filepath, async (error) => {
                 if (!error) {
                     try {
@@ -219,8 +220,7 @@ module.exports.updateImage = (req, res) => {
                         return res.status(200).json({
                             msg: 'Image has been updated successfully',
                             response
-                        })
-                        console.log('Image Successfully Uploaded.');
+                        });
                     } catch (error) {
                         return res.status(500).json({
                             errors: error,
@@ -231,4 +231,19 @@ module.exports.updateImage = (req, res) => {
             })
         }
     })
+}
+
+module.exports.deletePost = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const response = await Post.findByIdAndRemove(id);
+        return res.status(200).json({
+            msg: 'Your post has successfully deleted.'
+        })
+    } catch (error) {
+        return res.status(500).json({
+            errors: error,
+            msg: error.message
+        })
+    }
 }
