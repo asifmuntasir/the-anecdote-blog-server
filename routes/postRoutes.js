@@ -8,7 +8,8 @@ const {
     fetchPost,
     updateValidations,
     updateImage,
-    deletePost
+    deletePost,
+    home
 } = require("../controllers/userPostController");
 
 
@@ -18,5 +19,6 @@ router.post('/update_image', auth, updateImage);
 router.get('/posts/:id/:page', auth, fetchPosts);
 router.get('/post/:id', auth, fetchPost);
 router.get('/delete_post/:id', auth, deletePost);
+router.get('/home/:page', home)
 
 module.exports = router;

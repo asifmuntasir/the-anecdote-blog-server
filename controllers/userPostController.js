@@ -225,7 +225,7 @@ module.exports.updateImage = (req, res) => {
                         return res.status(500).json({
                             errors: error,
                             msg: error.message
-                        })
+                        });
                     }
                 }
             })
@@ -245,5 +245,32 @@ module.exports.deletePost = async (req, res) => {
             errors: error,
             msg: error.message
         })
+    }
+}
+
+
+// Display all post to the home page
+
+module.exports.home = async (req, res) => {
+    const page = req.params.page;
+    const perPage = 5;
+    const skip = (page - 1) * perPage;
+    try {
+        const count = await Post.find({}).countDocuments();
+        const posts = await Post
+            .find({})
+            .skip(skip)
+            .limit(perPage)
+            .sort({ updatedAt: -1 });
+        return res.status(200).json({
+            response: posts,
+            count,
+            perPage
+        });
+    } catch (error) {
+        return res.status(500).json({
+            errors: error,
+            msg: error.message
+        });
     }
 }
