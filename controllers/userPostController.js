@@ -4,6 +4,8 @@ const { body, validationResult } = require("express-validator");
 const { htmlToText } = require('html-to-text');
 const fs = require('fs');
 const Post = require('../models/Post');
+const CommentSchema = require('../models/Comment');
+const { post } = require('../routes/postRoutes');
 
 module.exports.createPost = (req, res) => {
     const form = formidable({
@@ -266,6 +268,43 @@ module.exports.home = async (req, res) => {
             response: posts,
             count,
             perPage
+        });
+    } catch (error) {
+        return res.status(500).json({
+            errors: error,
+            msg: error.message
+        });
+    }
+}
+
+// Display post details
+module.exports.postDetails = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const post_details = await Post.findOne({ slug: id });
+        const comments = await CommentSchema.find({ postId: post_details._id }).sort({ updatedAt: -1 });
+        return res.status(200).json({ post_details, comments });
+    } catch (error) {
+        return res.status(500).json({
+            errors: error,
+            msg: error.message
+        });
+    }
+}
+
+
+// Fetch logged user comment
+module.exports.postComment = async (req, res) => {
+    const { id, comment, userName } = req.body;
+    console.log(req.body);
+    try {
+        const response = await CommentSchema.create({
+            postId: id,
+            comment,
+            userName
+        });
+        return res.status(200).json({
+            msg: 'Your comment has been published'
         });
     } catch (error) {
         return res.status(500).json({
