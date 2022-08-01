@@ -3,6 +3,8 @@ const formidable = require('formidable');
 const { body, validationResult } = require("express-validator");
 const { htmlToText } = require('html-to-text');
 const fs = require('fs');
+const fse = require('fs-extra');
+const path = require('path');
 const Post = require('../models/Post');
 const CommentSchema = require('../models/Comment');
 const { post } = require('../routes/postRoutes');
@@ -68,8 +70,10 @@ module.exports.createPost = (req, res) => {
                 files
             })
         } else {
-            const newPath = __dirname + `../../the-anecdote-client/public/image/${files.image.originalFilename}`;
-            fs.copyFile(files.image.filepath, newPath, async (error) => {
+            // const newPath = __dirname + `../../the-anecdote-client/public/image/${files.image.originalFilename}`;
+            const currentPath = (files.image.filepath);
+            const newPath = (`../../the-anecdote-client/public/image/${files.image.originalFilename}`);
+            fs.copyFile(currentPath, newPath, async (error) => {
                 try {
                     const response = await Post.create({
                         title,
